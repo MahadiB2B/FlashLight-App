@@ -19,8 +19,8 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.flashlight_app"
-        minSdk 21 // এখানে ২১ বা তার বেশি থাকতে হবে
+        applicationId "com.example.flashlight"
+        minSdk 21
         targetSdk flutter.targetSdkVersion
                 versionCode 1
         versionName "1.0.0"
