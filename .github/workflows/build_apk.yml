@@ -2,36 +2,42 @@ name: Build Flutter APK
 
 on:
   push:
-    branches: [ main, master ]
-  workflow_dispatch:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v3
+      # জাভা সেটআপ (ফ্লাটার ৩.২২+ এর জন্য Java 17 বাধ্যতামূলক)
+      - name: Set up Java
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Setup Flutter
+      # ফ্লাটার এসডিকে সেটআপ
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.x' # লেটেস্ট স্টেবল ভার্সন ব্যবহার করবে
           channel: 'stable'
 
-      - name: Install Dependencies
+      # ডিপেন্ডেন্সি ইনস্টল করা
+      - name: Install dependencies
         run: flutter pub get
 
+      # APK বিল্ড করা (Release মোডে)
       - name: Build APK
         run: flutter build apk --release
 
+      # বিল্ড করা APK ফাইলটি GitHub Actions Artifact হিসেবে সেভ করে রাখা
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Flashlight-App-Release
+          name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
