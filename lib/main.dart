@@ -45,7 +45,7 @@ class _FlashlightScreenState extends State<FlashlightScreen> {
     _initCamera();
   }
 
-  // ক্যামেরা ইনিশিয়ালাইজেশন
+  // ক্যামেরা ইনিশিয়ালাইজেশন
   Future<void> _initCamera() async {
     if (_cameras.isEmpty) return;
 
@@ -103,7 +103,6 @@ class _FlashlightScreenState extends State<FlashlightScreen> {
       _brightnessLevel = value;
     });
 
-    // স্লাইডার ০.২ এর নিচে গেলে টর্চ অফ হবে, উপরে থাকলে অন হবে
     if (value <= 0.2 && _isTorchOn) {
       _toggleTorch(false);
     } else if (value > 0.2 && !_isTorchOn) {
@@ -120,94 +119,171 @@ class _FlashlightScreenState extends State<FlashlightScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: const Color(0xFF1a1a1a),
       appBar: AppBar(
-        title: const Text('Flashlight Controller'),
+        title: const Text('Flashlight'),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       body: !_isCameraReady
           ? const Center(child: CircularProgressIndicator())
-          : Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Brightness: ${(_brightnessLevel * 100).round()}%',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: _isTorchOn ? Colors.amber : Colors.grey,
-              ),
+          : Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // ব্রাইটনেস স্ট্যাটাস টেক্সট
+          Text(
+            'Brightness: ${(_brightnessLevel * 100).round()}%',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: _isTorchOn ? Colors.amber : Colors.grey,
             ),
-            const SizedBox(height: 40),
+          ),
+          const SizedBox(height: 20),
 
-            // পাওয়ার বাটন
-            GestureDetector(
-              onTap: () => _toggleTorch(!_isTorchOn),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                height: 140,
-                width: 140,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _isTorchOn
-                      ? Colors.amber.shade600
-                      : Colors.grey.shade900,
-                  boxShadow: _isTorchOn
-                      ? [
-                    BoxShadow(
-                      color: Colors.amber.withOpacity(0.6),
-                      blurRadius: 40,
-                      spreadRadius: 10,
-                    )
-                  ]
-                      : [],
-                ),
-                child: Icon(
-                  Icons.power_settings_new_rounded,
-                  size: 70,
-                  color: _isTorchOn ? Colors.black : Colors.grey,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 60),
-
-            // ব্রাইটনেস স্লাইডার
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0),
-              child: Column(
+          // ছবির আদলে তৈরি রিয়ালিস্টিক টর্চলাইট ডিজাইন
+          Expanded(
+            child: Center(
+              child: Stack(
+                alignment: Alignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Icon(Icons.highlight, color: Colors.grey, size: 20),
-                      Icon(Icons.wb_sunny_rounded,
-                          color: Colors.amber, size: 28),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // টর্চের মাথা (Head অংশ - রিং সহ)
+                      Container(
+                        width: 170,
+                        height: 110,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2c2c2c),
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(25),
+                            bottom: Radius.circular(12),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _isTorchOn
+                                  ? Colors.amber.withValues(alpha: 0.5)
+                                  : Colors.black.withValues(alpha: 0.6),
+                              blurRadius: _isTorchOn ? 45 : 12,
+                              spreadRadius: _isTorchOn ? 12 : 2,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 12),
+                            // সিলভার রিং বা বর্ডার
+                            Container(
+                              width: 150,
+                              height: 12,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade500,
+                                borderRadius: BorderRadius.circular(6),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.4),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // টর্চের নিচের বডি অংশ
+                      Container(
+                        width: 130,
+                        height: 240,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF202020),
+                          borderRadius: BorderRadius.vertical(
+                            bottom: Radius.circular(35),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  SliderTheme(
-                    data: SliderTheme.of(context).copyWith(
-                      activeTrackColor: Colors.amber,
-                      inactiveTrackColor: Colors.grey.shade800,
-                      thumbColor: Colors.amberAccent,
-                      overlayColor: Colors.amber.withOpacity(0.2),
-                      trackHeight: 8.0,
-                    ),
-                    child: Slider(
-                      value: _brightnessLevel,
-                      min: 0.1,
-                      max: 1.0,
-                      onChanged: (value) => _onSliderChanged(value),
+
+                  // ঠিক মাঝখানের পাওয়ার সুইচ বাটন
+                  Positioned(
+                    child: GestureDetector(
+                      onTap: () => _toggleTorch(!_isTorchOn),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        width: 75,
+                        height: 75,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _isTorchOn
+                              ? Colors.amber.shade600
+                              : const Color(0xFF141414),
+                          border: Border.all(
+                            color: _isTorchOn
+                                ? Colors.amberAccent
+                                : Colors.grey.shade800,
+                            width: 3.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _isTorchOn
+                                  ? Colors.amber.withValues(alpha: 0.6)
+                                  : Colors.black.withValues(alpha: 0.9),
+                              blurRadius: 15,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.power_settings_new_rounded,
+                          size: 36,
+                          color: _isTorchOn
+                              ? Colors.black
+                              : Colors.grey.shade600,
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+
+          // নিচে ব্রাইটনেস স্লাইডার
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 40.0, vertical: 30.0),
+            child: Column(
+              children: [
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.highlight, color: Colors.grey, size: 20),
+                    Icon(Icons.wb_sunny_rounded,
+                        color: Colors.amber, size: 26),
+                  ],
+                ),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    activeTrackColor: Colors.amber,
+                    inactiveTrackColor: Colors.grey.shade800,
+                    thumbColor: Colors.amberAccent,
+                    overlayColor: Colors.amber.withValues(alpha: 0.2),
+                    trackHeight: 6.0,
+                  ),
+                  child: Slider(
+                    value: _brightnessLevel,
+                    min: 0.1,
+                    max: 1.0,
+                    onChanged: (value) => _onSliderChanged(value),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
