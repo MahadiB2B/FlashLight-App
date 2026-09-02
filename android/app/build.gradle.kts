@@ -19,11 +19,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.flashlight";
-        minSdk 21;
-        targetSdk flutter.targetSdkVersion;
-                versionCode 1;
-        versionName "1.0.0";
+        applicationId "com.example.flashlight"
+        minSdk 21
+        targetSdk flutter.targetSdkVersion
+                versionCode 1
+        versionName "1.0.0"
     }
 
     buildTypes {
