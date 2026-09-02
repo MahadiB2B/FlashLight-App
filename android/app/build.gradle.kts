@@ -5,25 +5,25 @@ plugins {
 }
 
 android {
-    namespace = "com.example.flashlight_app"
+    namespace = "com.example.flashlight"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     defaultConfig {
-        applicationId "com.example.flashlight"
-        minSdk 21
-        targetSdk flutter.targetSdkVersion
-                versionCode 1
-        versionName "1.0.0"
+        applicationId = "com.example.flashlight"
+        minSdk = 21
+        targetSdk = flutter.targetSdkVersion
+        versionCode = 1
+        versionName = "1.0.0"
     }
 
     buildTypes {
