@@ -22,8 +22,8 @@ android {
         applicationId "com.example.flashlight_app"
         minSdk 21 // এখানে ২১ বা তার বেশি থাকতে হবে
         targetSdk flutter.targetSdkVersion
-                versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+                versionCode 1
+        versionName "1.0.0"
     }
 
     buildTypes {
